@@ -26,7 +26,6 @@ const URLSchema = new Schema({
   },
 });
 
-
 // Creating URL Model from URL Schema
 const URLModel = mongoose.model("URL", URLSchema);
 
@@ -44,6 +43,19 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
+// Custom route to get all collection data
+app.get('/allData' , function (req , res) {
+  URLModel.find({}).then(function (data) {
+    const mappedData = data.map(data => ({
+      _id: data._id,
+      original_url: data.original_url,
+      short_url: data.short_url
+    }));
+    res.json(mappedData);     
+  });
+});
+
+// Custom route to get the total of collection in "urls" document
 app.get('/DocumentCount', async (req, res) => {
   try {
     const totalDocuments = await URLModel.countDocuments({});
@@ -122,8 +134,7 @@ app.post("/api/shorturl", (req, res) => {
   }
 });
 
-// Custom route to pass original url value to html
-// Route to fetch original URL as JSON
+// Custom route to pass original url value (in JSON format) to html
 app.get("/api/originalurl/:short_url", (req, res) => {
   let short_url = req.params.short_url;
   try {
