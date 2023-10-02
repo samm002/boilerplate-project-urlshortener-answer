@@ -16,8 +16,6 @@ h3 {
   margin-top: 30px;
 }
 
-
-
 .user-stories li {
   margin-bottom: 1em;
 }
@@ -43,4 +41,20 @@ input {
 input[type='text'] {
   width: 220px;
   text-align: center;
+}
+
+/* Custom Styling */
+label, select {
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+#urlPreview {
+  display: none;
+}
+
+/* Show the preview text when hovering over the submit button */
+#submitButton:hover + #urlPreview {
+  display: block;
 }

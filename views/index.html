@@ -25,8 +25,64 @@
         </form>
       </section>
     </main>
+    <!-- A bit modify to test the shorturl -->
+    <h2>Try ShortUrls</h2>
+    <form id="redirectForm" action="">
+      <label id="currentUrl" for="cars"></label>
+      <select id="urls" name="urls"></select>
+      <input type="submit" id="submitButton" value="Go!">
+      <p id="urlPreview"></p>
+    </form>
     <footer>
       <p>By <a href="https://www.freecodecamp.org/">freeCodeCamp</a></p>
     </footer>
+    <script>
+      document.getElementById("currentUrl").innerHTML = window.location.href;
+
+      async function fetchTotalDocumentCount() {
+      try {
+        const response = await fetch('/DocumentCount');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        const totalDocumentCount = data.totalDocuments;
+        const selectElement = document.getElementById("urls");
+        for (let i = 1; i <= totalDocumentCount; i++) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.textContent = i;
+          selectElement.appendChild(option);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchTotalDocumentCount();
+
+    const form = document.getElementById("redirectForm");
+    form.addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent the default form submission
+      
+      // Get the selected option value
+      const shorturl = document.getElementById('urls').value;
+      
+      // Set the form action to the selected URL (you can customize the URL format)
+      form.action = `/api/shorturl/${shorturl}`;
+      // Submit the form
+      form.submit();
+    });
+
+    const urlPreview = document.getElementById("urlPreview");
+    const selectElement = document.getElementById("urls");
+
+    selectElement.addEventListener("change", async (event) => {
+      event.preventDefault(); // Prevent the default form submission
+      const short_url = selectElement.value;      
+      const response = await fetch(`/api/originalurl/${short_url}`);
+      const data = await response.json();
+      urlPreview.innerHTML = `Redirecting you to : ${data.original_url}`;
+    });
+    </script>
   </body>
 </html>
